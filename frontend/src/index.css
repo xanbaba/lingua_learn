@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Background gradients to match design */
+body {
+    background-image: linear-gradient(to bottom right, #a8d5e5, #f3d1f4);
+}
+
+.dark body {
+    background-image: linear-gradient(to bottom right, #2a3a4a, #4a2a4a);
+}
+
+/* Glassmorphism utilities to complement Tailwind */
+.glassmorphism {
+    background: rgba(255, 255, 255, 0.2);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glassmorphism {
+    background: rgba(30, 41, 59, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glassmorphism-inner {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.dark .glassmorphism-inner {
+    background: rgba(51, 65, 85, 0.4);
+}
