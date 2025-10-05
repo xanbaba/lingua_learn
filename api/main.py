@@ -1,7 +1,7 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import asyncio
 import json
-from utils import predict_from_data_url
+from .utils import predict_from_data_url
 
 
 app = FastAPI(title="Lingua Learn API")

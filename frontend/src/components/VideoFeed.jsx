@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const VideoFeed = () => {
+const VideoFeed = ({ onPrediction }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const socketRef = useRef(null);
@@ -18,12 +18,22 @@ const VideoFeed = () => {
         const handleServerMessage = (event) => {
           try {
             const data = JSON.parse(event.data);
-            const maxEntry = Object.entries(data.data).reduce((max, [letter, value]) => {
-              return value > max.value ? { letter, value } : max;
-          }, { letter: null, value: -Infinity });
-          
-          console.log(`Letter: ${maxEntry.letter}, Probability: ${maxEntry.value}`);
-            // Future: integrate into state/store to drive UI updates
+            const maxEntry = Object.entries(data.data).reduce(
+              (max, [letter, value]) => {
+                return value > max.value ? { letter, value } : max;
+              },
+              { letter: null, value: -Infinity }
+            );
+
+            console.log(
+              `Letter: ${maxEntry.letter}, Probability: ${maxEntry.value}`
+            );
+            if (onPrediction && maxEntry.letter) {
+              onPrediction({
+                letter: maxEntry.letter,
+                probability: maxEntry.value,
+              });
+            }
           } catch (e) {
             console.log("[WS] raw message:", event.data);
           }
@@ -39,19 +49,23 @@ const VideoFeed = () => {
           const elapsed = now - lastSentRef.current;
           const interval = 1000 / targetFPS;
 
-          if (elapsed > interval && socketRef.current.readyState === WebSocket.OPEN) {
+          if (
+            elapsed > interval &&
+            socketRef.current.readyState === WebSocket.OPEN
+          ) {
             const video = videoRef.current;
             const canvas = canvasRef.current;
             const ctx = canvas.getContext("2d");
 
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             const dataUrl = canvas.toDataURL("image/jpeg", 0.8); // quality 0–1
-          
-            
-            socketRef.current.send(JSON.stringify({
-              type: "frame",
-              data: dataUrl
-            }));
+
+            socketRef.current.send(
+              JSON.stringify({
+                type: "frame",
+                data: dataUrl,
+              })
+            );
 
             lastSentRef.current = now;
             console.log("Sent frame");
@@ -73,12 +87,23 @@ const VideoFeed = () => {
         socketRef.current.close();
       }
     };
-  }, []);
+  }, [onPrediction]);
 
   return (
     <div className="glassmorphism-inner rounded-lg overflow-hidden w-full h-full flex items-center justify-center">
-      <video ref={videoRef} autoPlay playsInline muted className="object-cover w-full h-full" />
-      <canvas ref={canvasRef} width={320} height={240} style={{ display: "none" }} />
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        className="object-cover w-full h-full"
+      />
+      <canvas
+        ref={canvasRef}
+        width={320}
+        height={240}
+        style={{ display: "none" }}
+      />
     </div>
   );
 };
