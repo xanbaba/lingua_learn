@@ -13,12 +13,12 @@ module.exports = {
                 "background-dark": "#101c22",
             },
             fontFamily: {
-                display: ["Spline Sans", "Noto Sans", "sans-serif"],
+                display: ["Lexend", "ui-sans-serif", "system-ui", "sans-serif"],
             },
             borderRadius: {
-                DEFAULT: "1rem",
-                lg: "2rem",
-                xl: "3rem",
+                DEFAULT: "0.25rem",
+                lg: "0.5rem",
+                xl: "0.75rem",
                 full: "9999px",
             },
         },

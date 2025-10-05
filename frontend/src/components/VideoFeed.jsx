@@ -5,7 +5,7 @@ const VideoFeed = () => {
   const canvasRef = useRef(null);
   const socketRef = useRef(null);
   const lastSentRef = useRef(0);
-  const targetFPS = 30;
+  const targetFPS = 1;
 
   useEffect(() => {
     navigator.mediaDevices
@@ -13,7 +13,26 @@ const VideoFeed = () => {
       .then((stream) => {
         if (videoRef.current) videoRef.current.srcObject = stream;
 
-        socketRef.current = new WebSocket("ws://localhost:5000/ws");
+        socketRef.current = new WebSocket("ws://localhost:8000/ws");
+
+        const handleServerMessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            const maxEntry = Object.entries(data.data).reduce((max, [letter, value]) => {
+              return value > max.value ? { letter, value } : max;
+          }, { letter: null, value: -Infinity });
+          
+          console.log(`Letter: ${maxEntry.letter}, Probability: ${maxEntry.value}`);
+            // Future: integrate into state/store to drive UI updates
+          } catch (e) {
+            console.log("[WS] raw message:", event.data);
+          }
+        };
+
+        socketRef.current.onopen = () => console.log("[WS] connected");
+        socketRef.current.onmessage = handleServerMessage;
+        socketRef.current.onerror = (err) => console.error("[WS] error:", err);
+        socketRef.current.onclose = () => console.log("[WS] disconnected");
 
         const sendFrame = (time) => {
           const now = performance.now();
@@ -35,6 +54,7 @@ const VideoFeed = () => {
             }));
 
             lastSentRef.current = now;
+            console.log("Sent frame");
           }
 
           requestAnimationFrame(sendFrame);
@@ -45,13 +65,19 @@ const VideoFeed = () => {
       .catch((err) => console.error("Error accessing webcam:", err));
 
     return () => {
-      if (socketRef.current) socketRef.current.close();
+      if (socketRef.current) {
+        socketRef.current.onopen = null;
+        socketRef.current.onmessage = null;
+        socketRef.current.onerror = null;
+        socketRef.current.onclose = null;
+        socketRef.current.close();
+      }
     };
   }, []);
 
   return (
-    <div className="glassy rounded-lg w-full h-full p-4 flex flex-col items-center justify-center">
-      <video ref={videoRef} autoPlay playsInline muted className="object-cover w-full h-full rounded-md" />
+    <div className="glassmorphism-inner rounded-lg overflow-hidden w-full h-full flex items-center justify-center">
+      <video ref={videoRef} autoPlay playsInline muted className="object-cover w-full h-full" />
       <canvas ref={canvasRef} width={320} height={240} style={{ display: "none" }} />
     </div>
   );

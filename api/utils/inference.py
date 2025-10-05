@@ -5,6 +5,7 @@ from typing import Dict
 from PIL import Image
 import torch
 from transformers import AutoImageProcessor, SiglipForImageClassification
+from .hand_detection import crop_hand_pil
 
 
 MODEL_NAME = "prithivMLmods/Alphabet-Sign-Language-Detection"
@@ -51,6 +52,8 @@ def predict_from_data_url(data_url: str) -> Dict[str, float]:
     Heavy work; run this in a thread/executor from async contexts.
     """
     image = _decode_data_url_to_image(data_url)
-    return _classify_image(image)
+    hand = crop_hand_pil(image)
+    image_to_use = hand if hand is not None else image
+    return _classify_image(image_to_use)
 
 

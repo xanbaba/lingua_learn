@@ -1,30 +1,11 @@
-const Footer = ({ setMode, mode }) => {
+const SiteFooter = () => {
   return (
-    <footer className="flex justify-center items-center py-4">
-      <div className="flex glassy rounded-full overflow-hidden shadow-lg">
-        <button
-          onClick={() => setMode("practice")}
-          className={`flex-1 min-w-[120px] max-w-[480px] h-14 px-8 text-lg font-bold tracking-[0.015em] ${
-            mode === "practice"
-              ? "bg-primary text-white"
-              : "bg-white/30 text-white hover:bg-primary/60"
-          }`}
-        >
-          Practice
-        </button>
-        <button
-          onClick={() => setMode("quiz")}
-          className={`flex-1 min-w-[120px] max-w-[480px] h-14 px-8 text-lg font-bold tracking-[0.015em] ${
-            mode === "quiz"
-              ? "bg-primary text-white"
-              : "bg-white/30 text-white hover:bg-primary/60"
-          }`}
-        >
-          Quiz
-        </button>
+    <footer className="w-full border-t border-white/20 mt-auto glassmorphism">
+      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <p className="text-center text-sm text-gray-700 dark:text-gray-300">© 2024 LinguaLearn. All rights reserved.</p>
       </div>
     </footer>
   );
 };
 
-export default Footer;
+export default SiteFooter;
