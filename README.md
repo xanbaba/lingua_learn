@@ -1,59 +1,92 @@
+# Lingua Learn
 
-# Lingua Learn API
+Learn and practice the American Sign Language (ASL) alphabet with live camera feedback. The app shows you a letter, you sign it in front of your webcam, and the system predicts the letter in real time to help you practice and self-correct.
 
-[![Project Status](https://img.shields.io/badge/status-active-success.svg)](https://github.com/your-username/lingua-learn-api)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/your-username/lingua-learn-api/actions/workflows/main.yml)
+## What it is
+- Practice mode to explore each letter with gentle guidance.
+- Quiz mode to test yourself quickly.
+- Live feedback: your webcam frames are analyzed and the most likely letter is returned.
 
-Lingua Learn API is a FastAPI-based backend designed to facilitate language learning through interactive exercises. It provides an API for processing user input, such as images or text, and returning relevant language-related data. This API includes a WebSocket endpoint for real-time communication and data streaming, making it suitable for applications requiring immediate feedback.
+## How it works (high level)
+1) Your browser captures frames from the webcam.
+2) Frames are sent over a WebSocket to the backend.
+3) The backend detects the hand region and classifies the letter using a vision model.
+4) The frontend can display the predicted letter and probabilities for feedback.
 
-### Prerequisites
+- AI model: `prithivMLmods/Alphabet-Sign-Language-Detection` (Hugging Face), running on the backend via PyTorch + Transformers, with MediaPipe assisting hand cropping.
 
+## Quickstart
+Prerequisites
 - Python 3.10+
-- `uv` package manager. Install via:
+- Node.js 18+ and npm 9+
+- `uv` package manager for Python (recommended): `pip install uv`
 
-bash
-git clone https://github.com/your-username/lingua-learn-api.git
-cd lingua-learn-api
-> Note: Ensure you have the latest version of `uv`.  If you encounter issues, try upgrading `uv` using `pip install --upgrade uv`.
+### 1) Backend (API)
+PowerShell (Windows)
+```powershell
+cd api
+uv venv .venv
+. .\.venv\Scripts\Activate.ps1
+uv pip install -e .
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
 
-### Usage
+POSIX (macOS/Linux)
+```bash
+cd api
+uv venv .venv
+source .venv/bin/activate
+uv pip install -e .
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
 
-Run the application using `uvicorn` with hot-reloading for development:
+- API: http://127.0.0.1:8000
+- Docs: http://127.0.0.1:8000/docs
+- WebSocket: ws://127.0.0.1:8000/ws
 
-- **`/` (GET)**:  A simple health check endpoint to verify the API is running.
-- **`/ws` (WebSocket)**:  A WebSocket endpoint for real-time communication.
+### 2) Frontend (Web)
+PowerShell (Windows)
+```powershell
+cd frontend
+$env:REACT_APP_API_WS_URL = "ws://127.0.0.1:8000/ws"
+npm ci
+npm start
+```
 
-json
-    {
-        "type": "frame",
-        "data": "data:image/jpeg;base64,/9j/4AAQSkZJRgABA..."
-    }
-        - **Server Responses:**
-        - `{"type": "prediction", "data": { "A": 0.123, ... } }`:  The server returns a prediction result with associated confidence scores for different categories.
-        - `{"type": "error", "message": "Error details"}`: The server returns an error message if something goes wrong during processing. The `message` field provides details about the error.
+POSIX (macOS/Linux)
+```bash
+cd frontend
+export REACT_APP_API_WS_URL=ws://127.0.0.1:8000/ws
+npm ci
+npm start
+```
 
-### Testing
+- App: http://localhost:3000
 
-Run tests using `pytest`:
+## Configuration
+- Frontend → Backend WebSocket URL: `REACT_APP_API_WS_URL` (e.g., `ws://127.0.0.1:8000/ws`).
+- Backend auto-selects CUDA if available; otherwise uses CPU. No other env vars are required by default.
 
-bash
-uv run ruff check .
-We welcome contributions to the Lingua Learn API! To contribute, please follow these steps:
+## Project structure
+```
+lingua_learn/
+  api/        # FastAPI backend, AI inference and hand detection
+  frontend/   # React app (CRA), Tailwind CSS, camera + WebSocket client
+```
 
-1.  Fork the repository.
-2.  Create a new branch for your feature or bug fix.
-3.  Implement your changes, ensuring they adhere to the project's coding standards.
-4.  Write tests to cover your changes.
-5.  Run linters and formatters to ensure code quality.
-6.  Commit your changes with clear, concise commit messages.
-7.  Push your branch to your forked repository.
-8.  Submit a pull request to the main repository.
+## Deployment (brief)
+- Build frontend: `npm run build` (outputs `frontend/build/`).
+- Run backend (ASGI): `uvicorn api.main:app --host 0.0.0.0 --port 8000`.
+- If the site is served over HTTPS, configure the frontend to use `wss://` for `REACT_APP_API_WS_URL`.
 
-> Before submitting a pull request, please ensure that all tests pass and that your code is properly linted.  Also, provide a clear description of the changes you've made and the problem they solve.
+## Troubleshooting
+- WebSocket not connecting: verify `REACT_APP_API_WS_URL` and that the backend is running at `/ws`.
+- Camera blocked: allow camera permission and use localhost/HTTPS.
+- Mixed content errors: use `wss://` when the site is served over HTTPS.
 
-### License
-
-> [Specify the project license here, e.g., MIT License]
+## Learn more
+- Backend details: see `api/README.md` (architecture, endpoints, models, configuration).
+- Frontend details: see `frontend/README.md` (tooling, scripts, environment, UI structure).
 
 ### Acknowledgements
 
