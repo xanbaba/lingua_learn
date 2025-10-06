@@ -3,24 +3,33 @@ import VideoFeed from "../components/VideoFeed";
 import ArrowButton from "../components/ArrowButton";
 import LetterDisplay from "../components/LetterDisplay";
 
-const ImagePanel = () => (
+const ImagePanel = ({ letter }) => (
   <div className="h-1/2 glassmorphism-inner rounded-lg overflow-hidden">
     <img
-      alt="Sign language for 'A'" height={"60%"}
+      alt={`Sign language for '${letter}'`}
+      height={"60%"}
       className="object-cover w-full h-full"
-      src="https://lh3.googleusercontent.com/aida-public/AB6AXuAL4J2Ur-1wVK32eHzQ6Te3BuwXmtT5_sUiksHa8NcTAEcL2wdxji_7SpawpWaph955uOV9qhSx6uOE7e70fMjC6zBh3CwRaJEeDTDFOuO_8Ft0kMB1bxD8FtY6WtTUwzZXsuNu_5G5F-Fppl7Tz8iT8Y7181J1dMYgUBrAaXvf7t0-3CtjZwoeOm9usR0w4qAhl2_18kr5k_d_caF6SGzci6OACegYUVEZ6DGk0woX1T5x4DpW0WfAdZPTBg-1vgPasDfGzuSx0Xc"
+      src={`/sign_images/${letter.toLowerCase()}.png`}
     />
   </div>
 );
 
-const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
+const alphabet = Array.from({ length: 26 }, (_, i) =>
+  String.fromCharCode(65 + i)
+);
 
 const PracticePage = () => {
   const [index, setIndex] = useState(0);
   const letter = useMemo(() => alphabet[index], [index]);
 
-  const prev = useCallback(() => setIndex((i) => (i - 1 + alphabet.length) % alphabet.length), []);
-  const next = useCallback(() => setIndex((i) => (i + 1) % alphabet.length), []);
+  const prev = useCallback(
+    () => setIndex((i) => (i - 1 + alphabet.length) % alphabet.length),
+    []
+  );
+  const next = useCallback(
+    () => setIndex((i) => (i + 1) % alphabet.length),
+    []
+  );
 
   return (
     <main className="flex flex-1 items-center justify-center py-5 px-4 sm:px-6 lg:px-8">
@@ -32,7 +41,7 @@ const PracticePage = () => {
               <VideoFeed />
             </div>
             <div className="flex flex-col gap-8">
-              <ImagePanel />
+              <ImagePanel letter={letter} />
               <LetterDisplay letter={letter} size="lg" />
             </div>
           </div>
