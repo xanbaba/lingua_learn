@@ -13,7 +13,7 @@ const VideoFeed = () => {
       .then((stream) => {
         if (videoRef.current) videoRef.current.srcObject = stream;
 
-        socketRef.current = new WebSocket("ws://localhost:8000/ws");
+        socketRef.current = new WebSocket(process.env.REACT_APP_API_WS_URL);
 
         const handleServerMessage = (event) => {
           try {
