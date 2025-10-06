@@ -88,4 +88,6 @@ lingua_learn/
 - Backend details: see `api/README.md` (architecture, endpoints, models, configuration).
 - Frontend details: see `frontend/README.md` (tooling, scripts, environment, UI structure).
 
+### Acknowledgements
 
+> [Acknowledge any third-party libraries, datasets, or individuals who contributed to the project.]
