@@ -1,6 +1,6 @@
 # Lingua Learn
 
-Learn and practice the American Sign Language (ASL) alphabet with live camera feedback. The app shows you a letter, you sign it in front of your webcam, and the system predicts the letter in real time to help you practice and self-correct.
+This app helps users learn and practice the American Sign Language (ASL) alphabet using real-time camera feedback. It displays a letter, recognizes the user’s hand sign through the camera, and instantly predicts the result to support effective practice and self-correction.
 
 ## What it is
 - Practice mode to explore each letter with gentle guidance.
